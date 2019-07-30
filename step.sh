@@ -12,22 +12,6 @@ function configure_openvpn {
     echo "${client_key}" > ${CONFIG_DIR}/client.key
 
     cat <<EOF > ${CLIENT_CONFIG}
-tls-client
-pull
-dev tun
-proto ${proto}
-remote ${host} ${port}
-resolv-retry infinite
-nobind
-persist-key
-persist-tun
-comp-lzo
-verb 3
-ca ca.crt
-cert client.crt
-key client.key
-auth SHA256
-
 remote ${host} ${port} ${proto}
 nobind 
 dev tun
