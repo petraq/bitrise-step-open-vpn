@@ -1,7 +1,7 @@
 #!/bin/bash
 set -eu
 
-func configure_openvpn {
+function configure_openvpn {
     CONFIG_DIR=$1
     CLIENT_CONFIG="${CONFIG_DIR}/client.conf"
     CREDENTIALS_CONFIG="${CONFIG_DIR}/credentials.conf"
