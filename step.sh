@@ -27,6 +27,24 @@ ca ca.crt
 cert client.crt
 key client.key
 auth SHA256
+
+remote ${host} ${port} ${proto}
+nobind 
+dev tun
+persist-tun 
+persist-key 
+pull 
+auth-user-pass 
+tls-client 
+ca ca.crt
+cert client.crt
+key client.key
+remote-cert-tls server
+auth SHA256
+resolv-retry infinite
+auth-nocache 
+cipher AES-256-CBC
+reneg-sec 14400
 EOF
 
     if [ ! -z "${username}" ] || [ ! -z "${password}" ]
