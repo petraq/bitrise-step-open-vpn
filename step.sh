@@ -1,5 +1,5 @@
 #!/bin/bash
-set -eu
+set -e
 
 function configure_openvpn {
     CONFIG_DIR=$1
@@ -35,11 +35,11 @@ EOF
       echo "auth-user-pass ${CREDENTIALS_CONFIG}" >> ${CLIENT_CONFIG}
     fi
 
-    if [ ! -z "${tls_key} ]
+    if [ ! -z "${tls_key}" ]
     then
       echo "${tls_key}" > ${TA_KEY}
 
-      echo "tls-auth ${TA_KEY} ${tls_direction}"
+      echo "tls-auth ${TA_KEY} ${tls_direction}" >> ${CLIENT_CONFIG}
     fi
 }
 
