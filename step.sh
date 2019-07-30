@@ -7,9 +7,9 @@ function configure_openvpn {
     CREDENTIALS_CONFIG="${CONFIG_DIR}/credentials.conf"
     TA_KEY="${CONFIG_DIR}/ta.key"
 
-    echo ${ca_crt} > ${CONFIG_DIR}/ca.crt
-    echo ${client_crt} > ${CONFIG_DIR}/client.crt
-    echo ${client_key} > ${CONFIG_DIR}/client.key
+    echo "${ca_crt}" > ${CONFIG_DIR}/ca.crt
+    echo "${client_crt}" > ${CONFIG_DIR}/client.crt
+    echo "${client_key}" > ${CONFIG_DIR}/client.key
 
     cat <<EOF > ${CLIENT_CONFIG}
 client
