@@ -72,7 +72,7 @@ inputs:
       is_expand: true
       is_required: false
       is_sensitive: true
-   - password: "$VPN_PASSWORD"
+  - password: "$VPN_PASSWORD"
     opts:
       title: "Open VPN Passoword"
       summary: "Open VPN Password"
