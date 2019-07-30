@@ -100,3 +100,20 @@ inputs:
       is_expand: true
       is_required: true
       is_sensitive: true
+  - tls_key: "$VPN_TLS_KEY_BASE64"
+    opts:
+      title: "Base64 encoded TLS Auth Key"
+      summary: "Base64 encoded TLS Auth Key"
+      is_expand: true
+      is_required: false
+      is_sensitive: true
+  - tls_direction: 0
+    opts:
+      title: "Open VPN TLS Auth direction"
+      summary: "Open VPN TLA Auth direction"
+      is_expand: true
+      is_required: true
+      value_options:
+        - 0
+        - 1
+ 

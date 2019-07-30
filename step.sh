@@ -1,18 +1,17 @@
 #!/bin/bash
 set -eu
 
-CONFIG="/etc/openvpn/client.conf"
-CREDENTIALS="/etc/openvpn/credentials.conf"
+func configure_openvpn {
+    CONFIG_DIR=$1
+    CLIENT_CONFIG="${CONFIG_DIR}/client.conf"
+    CREDENTIALS_CONFIG="${CONFIG_DIR}/credentials.conf"
+    TA_KEY="${CONFIG_DIR}/ta.key"
 
-case "$OSTYPE" in
-  linux*)
-    echo "Configuring for Ubuntu"
+    echo ${ca_crt} > ${CONFIG_DIR}/ca.crt
+    echo ${client_crt} > ${CONFIG_DIR}/client.crt
+    echo ${client_key} > ${CONFIG_DIR}/client.key
 
-    echo ${ca_crt} | base64 -d > /etc/openvpn/ca.crt
-    echo ${client_crt} | base64 -d > /etc/openvpn/client.crt
-    echo ${client_key} | base64 -d > /etc/openvpn/client.key
-
-    cat <<EOF > ${CONFIG}
+    cat <<EOF > ${CLIENT_CONFIG}
 client
 dev tun
 proto ${proto}
@@ -30,11 +29,25 @@ EOF
 
     if [ ! -z "${username}" ] || [ ! -z "${password}" ]
     then
-      echo ${username} > ${CREDENTIALS}
-      echo ${password} >> ${CREDENTIALS}
+      echo ${username} > ${CREDENTIALS_CONFIG}
+      echo ${password} >> ${CREDENTIALS_CONFIG}
 
-      echo "auth-user-pass ${CREDENTIALS}" >> ${CONFIG}
+      echo "auth-user-pass ${CREDENTIALS_CONFIG}" >> ${CLIENT_CONFIG}
     fi
+
+    if [ ! -z "${tls_key} ]
+    then
+      echo "${tls_key}" > ${TA_KEY}
+
+      echo "tls-auth ${TA_KEY} ${tls_direction}"
+    fi
+}
+
+case "$OSTYPE" in
+  linux*)
+    echo "Configuring for Ubuntu"
+
+    configure_openvpn "/etc/openvpn"
 
     service openvpn start client > /dev/null 2>&1
     sleep 5
@@ -49,12 +62,10 @@ EOF
     ;;
   darwin*)
     echo "Configuring for Mac OS"
+ 
+    configure_openvpn "."
 
-    echo ${ca_crt} | base64 -D -o ca.crt > /dev/null 2>&1
-    echo ${client_crt} | base64 -D -o client.crt > /dev/null 2>&1
-    echo ${client_key} | base64 -D -o client.key > /dev/null 2>&1
-
-    sudo openvpn --client --dev tun --proto ${proto} --remote ${host} ${port} --resolv-retry infinite --nobind --persist-key --persist-tun --comp-lzo --verb 3 --ca ca.crt --cert client.crt --key client.key > /dev/null 2>&1 &
+    sudo openvpn --config client.conf > /dev/null 2>&1 &
 
     sleep 5
 
