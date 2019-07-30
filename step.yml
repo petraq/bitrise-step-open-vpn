@@ -65,6 +65,20 @@ inputs:
       value_options:
         - udp
         - tcp
+  - username: "$VPN_USERNAME"
+    opts:
+      title: "Open VPN Username"
+      summary: "Open VPN Username"
+      is_expand: true
+      is_required: false
+      is_sensitive: true
+   - password: "$VPN_PASSWORD"
+    opts:
+      title: "Open VPN Passoword"
+      summary: "Open VPN Password"
+      is_expand: true
+      is_required: false
+      is_sensitive: true
   - ca_crt: "$VPN_CA_CRT_BASE64"
     opts:
       title: "Base64 encoded CA Certificate"

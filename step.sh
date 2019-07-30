@@ -1,6 +1,9 @@
 #!/bin/bash
 set -eu
 
+CONFIG="/etc/openvpn/client.conf"
+CREDENTIALS="/etc/openvpn/credentials.conf"
+
 case "$OSTYPE" in
   linux*)
     echo "Configuring for Ubuntu"
@@ -9,7 +12,7 @@ case "$OSTYPE" in
     echo ${client_crt} | base64 -d > /etc/openvpn/client.crt
     echo ${client_key} | base64 -d > /etc/openvpn/client.key
 
-    cat <<EOF > /etc/openvpn/client.conf
+    cat <<EOF > ${CONFIG}
 client
 dev tun
 proto ${proto}
@@ -24,6 +27,14 @@ ca ca.crt
 cert client.crt
 key client.key
 EOF
+
+    if [ ! -z "${username}" ] || [ ! -z "${password}" ]
+    then
+      echo ${username} > ${CREDENTIALS}
+      echo ${password} >> ${CREDENTIALS}
+
+      echo "auth-user-pass ${CREDENTIALS}" >> ${CONFIG}
+    fi
 
     service openvpn start client > /dev/null 2>&1
     sleep 5
