@@ -12,7 +12,8 @@ function configure_openvpn {
     echo "${client_key}" > ${CONFIG_DIR}/client.key
 
     cat <<EOF > ${CLIENT_CONFIG}
-client
+tls-client
+pull
 dev tun
 proto ${proto}
 remote ${host} ${port}
@@ -25,6 +26,7 @@ verb 3
 ca ca.crt
 cert client.crt
 key client.key
+auth SHA256
 EOF
 
     if [ ! -z "${username}" ] || [ ! -z "${password}" ]
@@ -65,11 +67,11 @@ case "$OSTYPE" in
  
     configure_openvpn "."
 
-    sudo openvpn --config client.conf > /dev/null 2>&1 &
+    sudo openvpn --config client.conf > openvpn.log 2>&1 &
 
     sleep 5
 
-    if ifconfig -l | grep utun0 > /dev/null
+    if cat openvpn.log | grep "Initialization Sequence Completed" > /dev/null
     then
       echo "VPN connection succeeded"
     else
